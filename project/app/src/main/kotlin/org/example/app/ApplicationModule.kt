@@ -19,11 +19,13 @@ fun Application.module() {
     val jwtConfig = AppEnvironment.jwtConfig()
     val dbConfig = AppEnvironment.dbConfig()
     val redisConfig = AppEnvironment.redisConfig()
+    val rabbitMqConfig = AppEnvironment.rabbitMqConfig()
 
     DatabaseFactory.init(dbConfig)
     val cacheFacade = DataServiceModule.cacheFacade(redisConfig)
+    val orderEventPublisher = DataServiceModule.orderEventPublisher(rabbitMqConfig)
 
-    val container = AppContainer(jwtConfig, cacheFacade, redisConfig)
+    val container = AppContainer(jwtConfig, cacheFacade, redisConfig, orderEventPublisher)
 
     install(CallLogging)
     configureSerialization()

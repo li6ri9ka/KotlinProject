@@ -20,7 +20,15 @@ object DataServiceModule {
     fun orderService() = OrderServiceImpl(
         orderRepository = RepositoryModule.orderRepository(),
         productRepository = RepositoryModule.productRepository(),
-        auditLogRepository = RepositoryModule.auditLogRepository()
+        auditLogRepository = RepositoryModule.auditLogRepository(),
+        eventPublisher = NoOpOrderEventPublisher
+    )
+
+    fun orderService(eventPublisher: OrderEventPublisher) = OrderServiceImpl(
+        orderRepository = RepositoryModule.orderRepository(),
+        productRepository = RepositoryModule.productRepository(),
+        auditLogRepository = RepositoryModule.auditLogRepository(),
+        eventPublisher = eventPublisher
     )
 
     fun statsService() = StatsServiceImpl(RepositoryModule.orderRepository())

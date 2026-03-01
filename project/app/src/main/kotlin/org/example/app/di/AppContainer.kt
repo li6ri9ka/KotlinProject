@@ -9,6 +9,7 @@ import org.example.app.controller.OrderController
 import org.example.app.controller.ProductController
 import org.example.data.cache.CacheFacade
 import org.example.data.cache.RedisConfig
+import org.example.data.queue.OrderEventPublisher
 import org.example.data.repository.impl.ExposedUserRepository
 import org.example.data.service.DataServiceModule
 import org.example.data.service.impl.AuthServiceImpl
@@ -17,7 +18,8 @@ import java.time.Clock
 class AppContainer(
     jwtConfig: JwtConfig,
     private val cacheFacade: CacheFacade,
-    private val redisConfig: RedisConfig
+    private val redisConfig: RedisConfig,
+    private val orderEventPublisher: OrderEventPublisher
 ) {
     private val userRepository = ExposedUserRepository(Clock.systemUTC())
     private val passwordHasher = BCryptPasswordHasher()
@@ -29,7 +31,7 @@ class AppContainer(
     )
 
     private val productService = DataServiceModule.productService()
-    private val orderService = DataServiceModule.orderService()
+    private val orderService = DataServiceModule.orderService(orderEventPublisher)
     private val statsService = DataServiceModule.statsService()
 
     val authController: AuthController = AuthController(authService)
