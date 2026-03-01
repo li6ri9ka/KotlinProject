@@ -3,6 +3,7 @@ package org.example.app.config
 import org.example.app.auth.JwtConfig
 import org.example.data.cache.RedisConfig
 import org.example.data.db.config.DatabaseConfig
+import org.example.data.queue.RabbitMqConfig
 
 object AppEnvironment {
     fun dbConfig(): DatabaseConfig = DatabaseConfig(
@@ -27,6 +28,15 @@ object AppEnvironment {
         enabled = env("REDIS_ENABLED", "false").toBoolean(),
         productTtlSeconds = env("REDIS_PRODUCT_TTL_SECONDS", "300").toLong(),
         orderTtlSeconds = env("REDIS_ORDER_TTL_SECONDS", "120").toLong()
+    )
+
+    fun rabbitMqConfig(): RabbitMqConfig = RabbitMqConfig(
+        host = env("RABBITMQ_HOST", "localhost"),
+        port = env("RABBITMQ_PORT", "5672").toInt(),
+        username = env("RABBITMQ_USERNAME", "guest"),
+        password = env("RABBITMQ_PASSWORD", "guest"),
+        virtualHost = env("RABBITMQ_VHOST", "/"),
+        enabled = env("RABBITMQ_ENABLED", "false").toBoolean()
     )
 
     private fun env(name: String, defaultValue: String): String =
