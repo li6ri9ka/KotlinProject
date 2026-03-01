@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.app.e2e.AuthE2ETest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-03-01T22:29:07" hostname="MacBook-Pro-Viktor.local" time="0.022">
+  <properties/>
+  <testcase name="register and login through API()" classname="org.example.app.e2e.AuthE2ETest" time="0.022"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
