@@ -7,6 +7,7 @@ import org.example.app.auth.configureSecurity
 import org.example.app.config.AppEnvironment
 import org.example.app.di.AppContainer
 import org.example.app.plugins.configureErrorHandling
+import org.example.app.plugins.configureDocumentation
 import org.example.app.plugins.configureSerialization
 import org.example.app.routes.configureAdminRoutes
 import org.example.app.routes.configureAuthRoutes
@@ -31,6 +32,7 @@ fun Application.module() {
     configureSerialization()
     configureErrorHandling()
     configureSecurity(jwtConfig)
+    configureDocumentation()
 
     configureAuthRoutes(container.authController)
     configureProductRoutes(container.productController)
