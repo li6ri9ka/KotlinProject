@@ -14,6 +14,7 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import org.example.app.auth.AUTH_JWT
 import org.example.app.auth.requireAdmin
 import org.example.app.controller.AdminController
 import org.example.app.principal.toCurrentUser
@@ -22,38 +23,39 @@ import org.example.common.dto.product.UpdateProductRequest
 import org.example.domain.error.AccessDeniedException
 import org.example.domain.error.ValidationException
 
-private const val AUTH_JWT = "auth-jwt"
-
 fun Application.configureAdminRoutes(adminController: AdminController) {
     routing {
         authenticate(AUTH_JWT) {
             route(ApiRoutes.PRODUCTS) {
                 post {
                     call.requireAdmin()
-                    call.receive<CreateProductRequest>()
-                    call.respond(HttpStatusCode.NotImplemented)
+                    val request = call.receive<CreateProductRequest>()
+                    val created = adminController.createProduct(request)
+                    call.respond(HttpStatusCode.Created, created)
                 }
 
                 put(ApiRoutes.PRODUCT_ID) {
                     call.requireAdmin()
-                    call.parameters["id"]?.toLongOrNull()
+                    val productId = call.parameters["id"]?.toLongOrNull()
                         ?: throw ValidationException("Invalid product id")
-                    call.receive<UpdateProductRequest>()
-                    call.respond(HttpStatusCode.NotImplemented)
+                    val request = call.receive<UpdateProductRequest>()
+                    val updated = adminController.updateProduct(productId, request)
+                    call.respond(HttpStatusCode.OK, updated)
                 }
 
                 delete(ApiRoutes.PRODUCT_ID) {
                     call.requireAdmin()
-                    call.parameters["id"]?.toLongOrNull()
+                    val productId = call.parameters["id"]?.toLongOrNull()
                         ?: throw ValidationException("Invalid product id")
-                    call.respond(HttpStatusCode.NotImplemented)
+                    adminController.deleteProduct(productId)
+                    call.respond(HttpStatusCode.NoContent)
                 }
             }
 
             route(ApiRoutes.STATS) {
                 get(ApiRoutes.STATS_ORDERS) {
                     call.requireAdmin()
-                    call.respond(HttpStatusCode.NotImplemented)
+                    call.respond(HttpStatusCode.OK, adminController.orderStats())
                 }
             }
         }

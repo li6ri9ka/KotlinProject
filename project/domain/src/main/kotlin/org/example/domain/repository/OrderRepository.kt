@@ -6,5 +6,6 @@ interface OrderRepository {
     fun create(order: Order): Order
     fun findById(orderId: Long): Order?
     fun findByUser(userId: Long): List<Order>
+    fun findAll(): List<Order>
     fun update(order: Order): Order
 }
