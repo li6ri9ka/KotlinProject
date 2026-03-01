@@ -39,6 +39,11 @@ object AppEnvironment {
         enabled = env("RABBITMQ_ENABLED", "false").toBoolean()
     )
 
+    fun adminBootstrapConfig(): AdminBootstrapConfig = AdminBootstrapConfig(
+        email = envOptional("ADMIN_BOOTSTRAP_EMAIL"),
+        password = envOptional("ADMIN_BOOTSTRAP_PASSWORD")
+    )
+
     private fun env(name: String, defaultValue: String): String =
         System.getenv(name)?.takeIf { it.isNotBlank() } ?: defaultValue
 

@@ -19,6 +19,7 @@ import org.example.data.service.DataServiceModule
 
 fun Application.module() {
     val jwtConfig = AppEnvironment.jwtConfig()
+    val adminBootstrapConfig = AppEnvironment.adminBootstrapConfig()
     val dbConfig = AppEnvironment.dbConfig()
     val redisConfig = AppEnvironment.redisConfig()
     val rabbitMqConfig = AppEnvironment.rabbitMqConfig()
@@ -27,7 +28,7 @@ fun Application.module() {
     val cacheFacade = DataServiceModule.cacheFacade(redisConfig)
     val orderEventPublisher = DataServiceModule.orderEventPublisher(rabbitMqConfig)
 
-    val container = AppContainer(jwtConfig, cacheFacade, redisConfig, orderEventPublisher)
+    val container = AppContainer(jwtConfig, adminBootstrapConfig, cacheFacade, redisConfig, orderEventPublisher)
 
     install(CallLogging)
     configureSerialization()

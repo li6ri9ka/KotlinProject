@@ -3,6 +3,8 @@ package org.example.app.di
 import org.example.app.auth.BCryptPasswordHasher
 import org.example.app.auth.JwtConfig
 import org.example.app.auth.JwtTokenService
+import org.example.app.bootstrap.AdminBootstrapper
+import org.example.app.config.AdminBootstrapConfig
 import org.example.app.controller.AdminController
 import org.example.app.controller.AuthController
 import org.example.app.controller.OrderController
@@ -17,6 +19,7 @@ import java.time.Clock
 
 class AppContainer(
     jwtConfig: JwtConfig,
+    adminBootstrapConfig: AdminBootstrapConfig,
     private val cacheFacade: CacheFacade,
     private val redisConfig: RedisConfig,
     private val orderEventPublisher: OrderEventPublisher
@@ -29,6 +32,7 @@ class AppContainer(
         passwordHasher = passwordHasher,
         tokenService = tokenService
     )
+    private val adminBootstrapper = AdminBootstrapper(userRepository, passwordHasher)
 
     private val productService = DataServiceModule.productService()
     private val orderService = DataServiceModule.orderService(orderEventPublisher)
@@ -46,4 +50,8 @@ class AppContainer(
         cacheTtlSeconds = redisConfig.orderTtlSeconds
     )
     val adminController: AdminController = AdminController(productService, statsService, cacheFacade)
+
+    init {
+        adminBootstrapper.ensureAdmin(adminBootstrapConfig)
+    }
 }
