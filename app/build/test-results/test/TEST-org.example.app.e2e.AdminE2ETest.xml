@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.example.app.e2e.AdminE2ETest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-03-01T22:29:06" hostname="MacBook-Pro-Viktor.local" time="0.62">
+<testsuite name="org.example.app.e2e.AdminE2ETest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-03-01T23:53:16" hostname="MacBook-Pro-Viktor.local" time="0.594">
   <properties/>
-  <testcase name="user role cannot access admin stats()" classname="org.example.app.e2e.AdminE2ETest" time="0.597"/>
-  <testcase name="admin role can access stats()" classname="org.example.app.e2e.AdminE2ETest" time="0.022"/>
+  <testcase name="user role cannot access admin stats()" classname="org.example.app.e2e.AdminE2ETest" time="0.573"/>
+  <testcase name="admin role can access stats()" classname="org.example.app.e2e.AdminE2ETest" time="0.02"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

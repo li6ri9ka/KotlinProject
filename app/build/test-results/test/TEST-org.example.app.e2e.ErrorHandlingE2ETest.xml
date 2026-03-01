@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.example.app.e2e.ErrorHandlingE2ETest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-03-01T22:29:07" hostname="MacBook-Pro-Viktor.local" time="0.022">
+<testsuite name="org.example.app.e2e.ErrorHandlingE2ETest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-03-01T23:53:16" hostname="MacBook-Pro-Viktor.local" time="0.021">
   <properties/>
-  <testcase name="unhandled exception returns internal error response()" classname="org.example.app.e2e.ErrorHandlingE2ETest" time="0.013"/>
-  <testcase name="invalid product id returns validation error response()" classname="org.example.app.e2e.ErrorHandlingE2ETest" time="0.008"/>
-  <system-out><![CDATA[01:29:07.438 [DefaultDispatcher-worker-3 @request#33] ERROR ktor.test - Unhandled error on GET /boom: boom
+  <testcase name="unhandled exception returns internal error response()" classname="org.example.app.e2e.ErrorHandlingE2ETest" time="0.012"/>
+  <testcase name="invalid product id returns validation error response()" classname="org.example.app.e2e.ErrorHandlingE2ETest" time="0.009"/>
+  <system-out><![CDATA[02:53:16.854 [DefaultDispatcher-worker-3 @request#33] ERROR ktor.test - Unhandled error on GET /boom: boom
 java.lang.IllegalStateException: boom
 	at org.example.app.e2e.ErrorHandlingE2ETest$unhandled exception returns internal error response$1$1$1$1.invokeSuspend(ErrorHandlingE2ETest.kt:59)
 	at org.example.app.e2e.ErrorHandlingE2ETest$unhandled exception returns internal error response$1$1$1$1.invoke(ErrorHandlingE2ETest.kt)

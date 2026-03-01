@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.example.data.queue.RabbitMqOrderEventPublisherIntegrationTest" tests="1" skipped="1" failures="0" errors="0" timestamp="2026-03-01T22:29:05" hostname="MacBook-Pro-Viktor.local" time="0.0">
+<testsuite name="org.example.data.queue.RabbitMqOrderEventPublisherIntegrationTest" tests="1" skipped="1" failures="0" errors="0" timestamp="2026-03-01T23:53:14" hostname="MacBook-Pro-Viktor.local" time="0.0">
   <properties/>
   <testcase name="publish writes message to queue()" classname="org.example.data.queue.RabbitMqOrderEventPublisherIntegrationTest" time="0.0">
     <skipped/>
