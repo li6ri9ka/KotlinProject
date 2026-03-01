@@ -1,3 +1,4 @@
 dependencies {
     implementation project(':common')
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.2'
 }

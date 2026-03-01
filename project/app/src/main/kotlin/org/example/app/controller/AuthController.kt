@@ -10,7 +10,8 @@ class AuthController(
 ) {
     fun register(request: RegisterRequest): AuthResponse {
         authService.register(request.email, request.password)
-        return AuthResponse(accessToken = "")
+        val token = authService.login(request.email, request.password)
+        return AuthResponse(accessToken = token)
     }
 
     fun login(request: LoginRequest): AuthResponse {

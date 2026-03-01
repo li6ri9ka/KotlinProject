@@ -1,19 +1,27 @@
 package org.example.app
 
 import io.ktor.server.application.Application
-import org.example.app.auth.JwtConfig
+import io.ktor.server.application.install
+import io.ktor.server.plugins.callloging.CallLogging
 import org.example.app.auth.configureSecurity
+import org.example.app.config.AppEnvironment
+import org.example.app.di.AppContainer
+import org.example.app.plugins.configureErrorHandling
+import org.example.app.plugins.configureSerialization
 import org.example.app.routes.configureAuthRoutes
+import org.example.data.db.config.DatabaseFactory
 
 fun Application.module() {
-    configureSecurity(
-        JwtConfig(
-            secret = "dev-secret",
-            issuer = "shop-service",
-            audience = "shop-clients",
-            realm = "shop-api",
-            expiresInSeconds = 3600
-        )
-    )
-    configureAuthRoutes()
+    val jwtConfig = AppEnvironment.jwtConfig()
+    val dbConfig = AppEnvironment.dbConfig()
+
+    DatabaseFactory.init(dbConfig)
+
+    val container = AppContainer(jwtConfig)
+
+    install(CallLogging)
+    configureSerialization()
+    configureErrorHandling()
+    configureSecurity(jwtConfig)
+    configureAuthRoutes(container.authController)
 }
