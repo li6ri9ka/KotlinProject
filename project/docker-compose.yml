@@ -33,6 +33,23 @@ services:
       - postgres
       - redis
       - rabbitmq
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    container_name: shop-worker
+    environment:
+      RABBITMQ_ENABLED: "true"
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+      RABBITMQ_VHOST: /
+    depends_on:
+      - rabbitmq
+    restart: unless-stopped
 
   postgres:
     image: postgres:16
@@ -45,12 +62,14 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
 
   redis:
     image: redis:7
     container_name: shop-redis
     ports:
       - "6379:6379"
+    restart: unless-stopped
 
   rabbitmq:
     image: rabbitmq:3.13-management
@@ -58,6 +77,7 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    restart: unless-stopped
 
 volumes:
   postgres-data:

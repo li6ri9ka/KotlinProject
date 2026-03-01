@@ -27,3 +27,6 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t shop-service:ci .
+
+      - name: Build Worker Docker image
+        run: docker build -f Dockerfile.worker -t shop-worker:ci .

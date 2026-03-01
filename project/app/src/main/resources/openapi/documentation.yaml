@@ -17,8 +17,24 @@ tags:
     description: Authenticated user order endpoints
   - name: Admin
     description: Admin-only endpoints
+  - name: System
+    description: Service maintenance endpoints
 
 paths:
+  /health:
+    get:
+      tags: [System]
+      summary: Health check
+      description: Liveness endpoint for platform health checks.
+      responses:
+        '200':
+          description: Service is alive
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: OK
+
   /auth/register:
     post:
       tags: [Auth]

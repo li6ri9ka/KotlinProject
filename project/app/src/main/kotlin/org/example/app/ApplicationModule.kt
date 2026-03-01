@@ -13,6 +13,7 @@ import org.example.app.routes.configureAdminRoutes
 import org.example.app.routes.configureAuthRoutes
 import org.example.app.routes.configureOrderRoutes
 import org.example.app.routes.configureProductRoutes
+import org.example.app.routes.configureSystemRoutes
 import org.example.data.db.config.DatabaseFactory
 import org.example.data.service.DataServiceModule
 
@@ -33,6 +34,7 @@ fun Application.module() {
     configureErrorHandling()
     configureSecurity(jwtConfig)
     configureDocumentation()
+    configureSystemRoutes()
 
     configureAuthRoutes(container.authController)
     configureProductRoutes(container.productController)
