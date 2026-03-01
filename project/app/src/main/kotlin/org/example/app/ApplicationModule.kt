@@ -13,12 +13,15 @@ import org.example.app.routes.configureAuthRoutes
 import org.example.app.routes.configureOrderRoutes
 import org.example.app.routes.configureProductRoutes
 import org.example.data.db.config.DatabaseFactory
+import org.example.data.service.DataServiceModule
 
 fun Application.module() {
     val jwtConfig = AppEnvironment.jwtConfig()
     val dbConfig = AppEnvironment.dbConfig()
+    val redisConfig = AppEnvironment.redisConfig()
 
     DatabaseFactory.init(dbConfig)
+    DataServiceModule.cacheFacade(redisConfig)
 
     val container = AppContainer(jwtConfig)
 
