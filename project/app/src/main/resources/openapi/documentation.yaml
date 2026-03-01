@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Shop Service API
-  version: 0.2.0
+  version: 0.3.0
   description: |
     API for e-commerce backend.
     Includes authentication, products, orders, admin operations, and order statistics.
@@ -238,6 +238,7 @@ paths:
     post:
       tags: [Orders]
       summary: Create order
+      description: Creates a new order for the authenticated user and reserves product stock.
       security:
         - bearerAuth: []
       requestBody:
@@ -259,15 +260,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OrderCreatedResponse'
+              examples:
+                created:
+                  value:
+                    orderId: 101
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalError'
     get:
       tags: [Orders]
       summary: List my orders
+      description: Returns full purchase history for the authenticated user.
       security:
         - bearerAuth: []
       responses:
@@ -279,13 +287,27 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/OrderResponse'
+              examples:
+                history:
+                  value:
+                    - id: 101
+                      status: CREATED
+                      total: "400.00"
+                      createdAt: "2026-03-01T10:00:00Z"
+                      items:
+                        - productId: 1
+                          quantity: 2
+                          unitPrice: "200.00"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalError'
 
   /orders/{id}:
     delete:
       tags: [Orders]
       summary: Cancel order
+      description: Cancels an existing order if it belongs to the authenticated user.
       security:
         - bearerAuth: []
       parameters:
@@ -301,11 +323,14 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalError'
 
   /stats/orders:
     get:
       tags: [Admin]
       summary: Orders statistics
+      description: Returns aggregated order statistics. Available only for admin users.
       security:
         - bearerAuth: []
       responses:
@@ -326,6 +351,8 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalError'
 
 components:
   securitySchemes:
@@ -338,6 +365,7 @@ components:
     IdPath:
       in: path
       name: id
+      description: Resource identifier
       required: true
       schema:
         type: integer
