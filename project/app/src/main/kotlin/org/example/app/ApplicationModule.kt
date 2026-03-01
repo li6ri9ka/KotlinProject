@@ -21,9 +21,9 @@ fun Application.module() {
     val redisConfig = AppEnvironment.redisConfig()
 
     DatabaseFactory.init(dbConfig)
-    DataServiceModule.cacheFacade(redisConfig)
+    val cacheFacade = DataServiceModule.cacheFacade(redisConfig)
 
-    val container = AppContainer(jwtConfig)
+    val container = AppContainer(jwtConfig, cacheFacade, redisConfig)
 
     install(CallLogging)
     configureSerialization()

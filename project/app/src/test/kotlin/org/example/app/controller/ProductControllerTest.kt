@@ -1,5 +1,6 @@
 package org.example.app.controller
 
+import org.example.data.cache.NoOpCacheFacade
 import org.example.domain.model.Product
 import org.example.domain.service.ProductService
 import kotlin.test.Test
@@ -20,7 +21,11 @@ class ProductControllerTest {
             override fun deleteProduct(productId: Long) = Unit
         }
 
-        val controller = ProductController(service)
+        val controller = ProductController(
+            productService = service,
+            cacheFacade = NoOpCacheFacade,
+            cacheTtlSeconds = 60
+        )
         val result = controller.listProducts()
 
         assertEquals(1, result.size)

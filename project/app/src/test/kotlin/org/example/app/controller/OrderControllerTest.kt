@@ -2,6 +2,7 @@ package org.example.app.controller
 
 import org.example.common.dto.order.CreateOrderItemRequest
 import org.example.common.dto.order.CreateOrderRequest
+import org.example.data.cache.NoOpCacheFacade
 import org.example.domain.model.Order
 import org.example.domain.model.OrderItem
 import org.example.domain.model.OrderStatus
@@ -28,7 +29,11 @@ class OrderControllerTest {
             override fun cancelOrder(userId: Long, orderId: Long) = Unit
         }
 
-        val controller = OrderController(service)
+        val controller = OrderController(
+            orderService = service,
+            cacheFacade = NoOpCacheFacade,
+            cacheTtlSeconds = 60
+        )
         val response = controller.createOrder(
             userId = 10,
             request = CreateOrderRequest(items = listOf(CreateOrderItemRequest(productId = 1, quantity = 2)))

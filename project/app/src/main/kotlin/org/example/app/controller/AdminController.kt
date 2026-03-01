@@ -4,6 +4,8 @@ import org.example.common.dto.admin.OrdersStatsResponse
 import org.example.common.dto.product.CreateProductRequest
 import org.example.common.dto.product.ProductResponse
 import org.example.common.dto.product.UpdateProductRequest
+import org.example.data.cache.CacheFacade
+import org.example.data.cache.CacheKeys
 import org.example.domain.error.ValidationException
 import org.example.domain.model.Product
 import org.example.domain.service.ProductService
@@ -12,20 +14,27 @@ import java.math.BigDecimal
 
 class AdminController(
     private val productService: ProductService,
-    private val statsService: StatsService
+    private val statsService: StatsService,
+    private val cacheFacade: CacheFacade
 ) {
     fun createProduct(request: CreateProductRequest): ProductResponse {
         val created = productService.createProduct(request.toDomain(id = 0))
+        cacheFacade.invalidate(CacheKeys.PRODUCTS_ALL)
+        cacheFacade.invalidate(CacheKeys.productById(created.id))
         return created.toResponse()
     }
 
     fun updateProduct(productId: Long, request: UpdateProductRequest): ProductResponse {
         val updated = productService.updateProduct(request.toDomain(id = productId))
+        cacheFacade.invalidate(CacheKeys.PRODUCTS_ALL)
+        cacheFacade.invalidate(CacheKeys.productById(productId))
         return updated.toResponse()
     }
 
     fun deleteProduct(productId: Long) {
         productService.deleteProduct(productId)
+        cacheFacade.invalidate(CacheKeys.PRODUCTS_ALL)
+        cacheFacade.invalidate(CacheKeys.productById(productId))
     }
 
     fun orderStats(): OrdersStatsResponse {
