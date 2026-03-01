@@ -92,7 +92,15 @@ Worker:
 ## Run with Docker Compose
 
 ```bash
+cp .env.example .env
 docker compose up --build
+```
+
+Or with helper command:
+
+```bash
+cp .env.example .env
+make up
 ```
 
 Services:
@@ -114,6 +122,12 @@ Default admin for `docker compose`:
 ./gradlew clean test
 ```
 
+Smoke check of deployed/local API:
+
+```bash
+BASE_URL=http://localhost:8080 ./scripts/smoke_api.sh
+```
+
 ## CI
 
 GitHub Actions workflow: `.github/workflows/ci.yml`
@@ -123,6 +137,7 @@ Pipeline steps:
 - `clean test assemble`
 - build app Docker image
 - build worker Docker image
+- docker-compose smoke check (`/health`)
 
 ## Deploy
 

@@ -53,6 +53,34 @@ class AdminBootstrapperTest {
 
         assertEquals(1, repo.count())
     }
+
+    @Test
+    fun `ensureAdmin does not overwrite existing non-admin account`() {
+        val repo = InMemoryUserRepository().apply {
+            create(
+                User(
+                    id = 0,
+                    email = "existing@example.com",
+                    passwordHash = "user-hash",
+                    role = Role.USER
+                )
+            )
+        }
+        val bootstrapper = AdminBootstrapper(repo, BCryptPasswordHasher())
+
+        bootstrapper.ensureAdmin(
+            AdminBootstrapConfig(
+                email = "existing@example.com",
+                password = "new-admin-password"
+            )
+        )
+
+        val existing = repo.findByEmail("existing@example.com")
+        assertNotNull(existing)
+        assertEquals(Role.USER, existing.role)
+        assertEquals("user-hash", existing.passwordHash)
+        assertEquals(1, repo.count())
+    }
 }
 
 private class InMemoryUserRepository : UserRepository {
