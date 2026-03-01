@@ -9,4 +9,7 @@ object ApiRoutes {
     const val PRODUCTS = "/products"
     const val ORDERS = "/orders"
     const val STATS = "/stats"
+
+    const val PRODUCT_ID = "/{id}"
+    const val ORDER_ID = "/{id}"
 }
