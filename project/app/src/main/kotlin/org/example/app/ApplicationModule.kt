@@ -9,6 +9,8 @@ import org.example.app.di.AppContainer
 import org.example.app.plugins.configureErrorHandling
 import org.example.app.plugins.configureSerialization
 import org.example.app.routes.configureAuthRoutes
+import org.example.app.routes.configureOrderRoutes
+import org.example.app.routes.configureProductRoutes
 import org.example.data.db.config.DatabaseFactory
 
 fun Application.module() {
@@ -24,4 +26,6 @@ fun Application.module() {
     configureErrorHandling()
     configureSecurity(jwtConfig)
     configureAuthRoutes(container.authController)
+    configureProductRoutes()
+    configureOrderRoutes()
 }
