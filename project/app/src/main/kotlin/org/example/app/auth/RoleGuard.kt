@@ -9,3 +9,7 @@ fun CurrentUser.requireRole(expected: Role) {
         throw AccessDeniedException("Required role: ${expected.name}")
     }
 }
+
+fun CurrentUser.requireAdmin() {
+    requireRole(Role.ADMIN)
+}

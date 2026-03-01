@@ -6,12 +6,23 @@ import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
 
 object DatabaseFactory {
-    fun init(config: DatabaseConfig): Database {
-        val dataSource = hikari(config)
-        if (config.runMigrations) {
-            migrate(dataSource)
+    @Volatile
+    private var initialized = false
+
+    fun init(config: DatabaseConfig) {
+        if (initialized) return
+
+        synchronized(this) {
+            if (initialized) return
+
+            val dataSource = hikari(config)
+            if (config.runMigrations) {
+                migrate(dataSource)
+            }
+
+            Database.connect(dataSource)
+            initialized = true
         }
-        return Database.connect(dataSource)
     }
 
     private fun hikari(config: DatabaseConfig): HikariDataSource {

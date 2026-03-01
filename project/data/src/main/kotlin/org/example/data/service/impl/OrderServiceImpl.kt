@@ -1,5 +1,8 @@
 package org.example.data.service.impl
 
+import org.example.common.dto.event.OrderEventMessage
+import org.example.common.dto.event.OrderEventType
+import org.example.data.queue.OrderEventPublisher
 import org.example.domain.error.AccessDeniedException
 import org.example.domain.error.NotFoundException
 import org.example.domain.error.ValidationException
@@ -18,6 +21,7 @@ class OrderServiceImpl(
     private val orderRepository: OrderRepository,
     private val productRepository: ProductRepository,
     private val auditLogRepository: AuditLogRepository,
+    private val eventPublisher: OrderEventPublisher,
     private val clock: Clock = Clock.systemUTC()
 ) : OrderService {
     override fun createOrder(userId: Long, items: List<OrderItem>): Order {
@@ -69,6 +73,16 @@ class OrderServiceImpl(
             )
         )
 
+        eventPublisher.publish(
+            OrderEventMessage(
+                eventType = OrderEventType.ORDER_CREATED,
+                orderId = created.id,
+                userId = userId,
+                createdAt = clock.instant().toString(),
+                payload = "total=${created.total}"
+            )
+        )
+
         return created
     }
 
@@ -96,6 +110,16 @@ class OrderServiceImpl(
                 action = "ORDER_CANCELED",
                 payload = "orderId=$orderId",
                 createdAt = clock.instant()
+            )
+        )
+
+        eventPublisher.publish(
+            OrderEventMessage(
+                eventType = OrderEventType.ORDER_CANCELED,
+                orderId = orderId,
+                userId = userId,
+                createdAt = clock.instant().toString(),
+                payload = "status=CANCELED"
             )
         )
     }

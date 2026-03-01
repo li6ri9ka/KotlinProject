@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: shop-service
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: DB_RUN_MIGRATIONS
+        value: "true"
+      - key: REDIS_ENABLED
+        value: "true"
+      - key: RABBITMQ_ENABLED
+        value: "true"

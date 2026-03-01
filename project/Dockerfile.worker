@@ -1,0 +1,9 @@
+FROM gradle:8.8-jdk21 AS build
+WORKDIR /workspace
+COPY . .
+RUN gradle :worker:installDist --no-daemon
+
+FROM eclipse-temurin:21-jre
+WORKDIR /worker
+COPY --from=build /workspace/worker/build/install/worker/ /worker/
+CMD ["/worker/bin/worker"]

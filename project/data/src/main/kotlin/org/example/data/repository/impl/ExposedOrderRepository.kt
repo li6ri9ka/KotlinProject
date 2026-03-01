@@ -9,7 +9,6 @@ import org.example.domain.repository.OrderRepository
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
-import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
@@ -48,6 +47,10 @@ class ExposedOrderRepository(
             .toList()
 
         mapOrders(orderRows)
+    }
+
+    override fun findAll(): List<Order> = transaction {
+        mapOrders(OrdersTable.selectAll().toList())
     }
 
     override fun update(order: Order): Order = transaction {
