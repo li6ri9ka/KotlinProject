@@ -6,28 +6,12 @@ import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
 
 object DatabaseFactory {
-    @Volatile
-    private var initialized = false
-
-    fun init(config: DatabaseConfig) {
-        if (initialized) return
-
-        synchronized(this) {
-            if (initialized) return
-
-            val dataSource = hikari(config)
-            if (config.runMigrations) {
-                Flyway
-                    .configure()
-                    .dataSource(dataSource)
-                    .locations("classpath:db/migration")
-                    .load()
-                    .migrate()
-            }
-
-            Database.connect(dataSource)
-            initialized = true
+    fun init(config: DatabaseConfig): Database {
+        val dataSource = hikari(config)
+        if (config.runMigrations) {
+            migrate(dataSource)
         }
+        return Database.connect(dataSource)
     }
 
     private fun hikari(config: DatabaseConfig): HikariDataSource {
@@ -42,5 +26,14 @@ object DatabaseFactory {
             validate()
         }
         return HikariDataSource(hikariConfig)
+    }
+
+    private fun migrate(dataSource: HikariDataSource) {
+        Flyway
+            .configure()
+            .dataSource(dataSource)
+            .locations("classpath:db/migration")
+            .load()
+            .migrate()
     }
 }

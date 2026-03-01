@@ -2,6 +2,10 @@ package org.example.app.routes
 
 object ApiRoutes {
     const val AUTH = "/auth"
+    const val REGISTER = "/register"
+    const val LOGIN = "/login"
+    const val ME = "/me"
+
     const val PRODUCTS = "/products"
     const val ORDERS = "/orders"
     const val STATS = "/stats"

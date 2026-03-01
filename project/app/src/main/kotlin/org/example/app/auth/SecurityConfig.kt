@@ -8,23 +8,24 @@ import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.jwt.jwt
 
 const val AUTH_JWT = "auth-jwt"
-const val CLAIM_ROLE = "role"
-const val CLAIM_EMAIL = "email"
 
 fun Application.configureSecurity(jwtConfig: JwtConfig) {
+    check(jwtConfig.secret.isNotBlank()) { "JWT secret must not be blank" }
+
     install(Authentication) {
         jwt(AUTH_JWT) {
             realm = jwtConfig.realm
             verifier(
-                JWT.require(Algorithm.HMAC256(jwtConfig.secret))
+                JWT
+                    .require(Algorithm.HMAC256(jwtConfig.secret))
                     .withIssuer(jwtConfig.issuer)
                     .withAudience(jwtConfig.audience)
                     .build()
             )
             validate { credential ->
-                val subject = credential.payload.subject
-                val role = credential.payload.getClaim(CLAIM_ROLE).asString()
-                if (!subject.isNullOrBlank() && !role.isNullOrBlank()) {
+                val email = credential.payload.getClaim(JwtTokenService.CLAIM_EMAIL).asString()
+                val role = credential.payload.getClaim(JwtTokenService.CLAIM_ROLE).asString()
+                if (!email.isNullOrBlank() && !role.isNullOrBlank()) {
                     io.ktor.server.auth.jwt.JWTPrincipal(credential.payload)
                 } else {
                     null

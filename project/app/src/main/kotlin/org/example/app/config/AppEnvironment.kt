@@ -15,7 +15,8 @@ object AppEnvironment {
         secret = env("JWT_SECRET", "dev-secret"),
         issuer = env("JWT_ISSUER", "shop-service"),
         audience = env("JWT_AUDIENCE", "shop-clients"),
-        realm = env("JWT_REALM", "shop-api")
+        realm = env("JWT_REALM", "shop-api"),
+        expiresInSeconds = env("JWT_EXPIRES_IN_SECONDS", "3600").toLong()
     )
 
     private fun env(name: String, defaultValue: String): String =
