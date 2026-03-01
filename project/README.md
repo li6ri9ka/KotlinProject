@@ -57,6 +57,8 @@ Minimal:
 - `JWT_AUDIENCE`
 - `JWT_REALM`
 - `JWT_EXPIRES_IN_SECONDS`
+- `ADMIN_BOOTSTRAP_EMAIL` (optional)
+- `ADMIN_BOOTSTRAP_PASSWORD` (optional)
 
 Cache:
 
@@ -101,6 +103,11 @@ Services:
 - PostgreSQL: `localhost:5432`
 - Redis: `localhost:6379`
 
+Default admin for `docker compose`:
+
+- email: `admin@example.com`
+- password: `admin123`
+
 ## Tests
 
 ```bash
@@ -124,7 +131,7 @@ Pipeline steps:
 1. Create new project from repository.
 2. Railway detects `Dockerfile` (or use `railway.toml`).
 3. Add PostgreSQL, Redis, RabbitMQ services.
-4. Set env vars from section above.
+4. Set env vars from section above, including `ADMIN_BOOTSTRAP_EMAIL` and `ADMIN_BOOTSTRAP_PASSWORD`.
 5. Set healthcheck `/health`.
 
 ### Render
@@ -132,7 +139,7 @@ Pipeline steps:
 1. Create Web Service from repository.
 2. Runtime: Docker (`Dockerfile`), or use `render.yaml`.
 3. Add managed PostgreSQL/Redis/RabbitMQ.
-4. Configure same env vars.
+4. Configure same env vars, including admin bootstrap variables.
 5. Deploy and verify `/health` and `/swagger`.
 
 ## Public URL

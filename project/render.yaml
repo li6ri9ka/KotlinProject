@@ -10,6 +10,10 @@ services:
         value: 10000
       - key: DB_RUN_MIGRATIONS
         value: "true"
+      - key: ADMIN_BOOTSTRAP_EMAIL
+        value: admin@example.com
+      - key: ADMIN_BOOTSTRAP_PASSWORD
+        sync: false
       - key: REDIS_ENABLED
         value: "true"
       - key: RABBITMQ_ENABLED

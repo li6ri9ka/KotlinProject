@@ -18,6 +18,8 @@ services:
       JWT_AUDIENCE: shop-clients
       JWT_REALM: shop-api
       JWT_EXPIRES_IN_SECONDS: "3600"
+      ADMIN_BOOTSTRAP_EMAIL: admin@example.com
+      ADMIN_BOOTSTRAP_PASSWORD: admin123
       REDIS_ENABLED: "true"
       REDIS_HOST: redis
       REDIS_PORT: 6379
