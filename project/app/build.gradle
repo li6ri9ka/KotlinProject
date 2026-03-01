@@ -1,3 +1,5 @@
+apply plugin: 'application'
+
 dependencies {
     implementation project(':common')
     implementation project(':domain')
@@ -33,4 +35,8 @@ dependencies {
     testImplementation 'org.testcontainers:junit-jupiter:1.20.1'
     testImplementation 'org.testcontainers:postgresql:1.20.1'
     testImplementation 'org.testcontainers:rabbitmq:1.20.1'
+}
+
+application {
+    mainClass = 'org.example.app.MainKt'
 }
