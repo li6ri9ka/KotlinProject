@@ -1,5 +1,6 @@
 package org.example.app.config
 
+import org.example.app.auth.JwtConfig
 import org.example.data.db.config.DatabaseConfig
 
 object AppEnvironment {
@@ -8,6 +9,13 @@ object AppEnvironment {
         username = env("DB_USERNAME", "shop"),
         password = env("DB_PASSWORD", "shop"),
         runMigrations = env("DB_RUN_MIGRATIONS", "true").toBoolean()
+    )
+
+    fun jwtConfig(): JwtConfig = JwtConfig(
+        secret = env("JWT_SECRET", "dev-secret"),
+        issuer = env("JWT_ISSUER", "shop-service"),
+        audience = env("JWT_AUDIENCE", "shop-clients"),
+        realm = env("JWT_REALM", "shop-api")
     )
 
     private fun env(name: String, defaultValue: String): String =
