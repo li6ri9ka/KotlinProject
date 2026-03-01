@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.app.integration.ProductIntegrationTest" tests="1" skipped="1" failures="0" errors="0" timestamp="2026-03-01T23:53:17" hostname="MacBook-Pro-Viktor.local" time="0.0">
+  <properties/>
+  <testcase name="create and find product via postgres()" classname="org.example.app.integration.ProductIntegrationTest" time="0.0">
+    <skipped/>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

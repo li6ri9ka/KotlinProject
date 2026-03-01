@@ -1,0 +1,607 @@
+openapi: 3.0.3
+info:
+  title: Shop Service API
+  version: 0.3.0
+  description: |
+    API for e-commerce backend.
+    Includes authentication, products, orders, admin operations, and order statistics.
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: Auth
+    description: Authentication and current user endpoints
+  - name: Products
+    description: Public product endpoints
+  - name: Orders
+    description: Authenticated user order endpoints
+  - name: Admin
+    description: Admin-only endpoints
+  - name: System
+    description: Service maintenance endpoints
+
+paths:
+  /health:
+    get:
+      tags: [System]
+      summary: Health check
+      description: Liveness endpoint for platform health checks.
+      responses:
+        '200':
+          description: Service is alive
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: OK
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new user
+      description: Creates user account and returns access token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            examples:
+              basic:
+                value:
+                  email: user@example.com
+                  password: strongPassword123
+      responses:
+        '201':
+          description: User registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              examples:
+                success:
+                  value:
+                    accessToken: eyJhbGciOiJIUzI1NiJ9...
+                    tokenType: Bearer
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login
+      description: Authenticates user and returns JWT token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              basic:
+                value:
+                  email: user@example.com
+                  password: strongPassword123
+      responses:
+        '200':
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get current user
+      description: Returns user info from JWT claims.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUser'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /products:
+    get:
+      tags: [Products]
+      summary: List products
+      description: Returns all products (may be cached).
+      responses:
+        '200':
+          description: Product list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductResponse'
+              examples:
+                list:
+                  value:
+                    - id: 1
+                      name: Phone
+                      description: Smartphone
+                      price: "199.99"
+                      stock: 10
+    post:
+      tags: [Admin]
+      summary: Create product
+      description: Admin-only product creation.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+            examples:
+              create:
+                value:
+                  name: Laptop
+                  description: 14 inch ultrabook
+                  price: "1299.00"
+                  stock: 5
+      responses:
+        '201':
+          description: Product created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /products/{id}:
+    get:
+      tags: [Products]
+      summary: Get product by id
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200':
+          description: Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+    put:
+      tags: [Admin]
+      summary: Update product
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductRequest'
+      responses:
+        '200':
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+    delete:
+      tags: [Admin]
+      summary: Delete product
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '204':
+          description: Product deleted
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /orders:
+    post:
+      tags: [Orders]
+      summary: Create order
+      description: Creates a new order for the authenticated user and reserves product stock.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+            examples:
+              oneItem:
+                value:
+                  items:
+                    - productId: 1
+                      quantity: 2
+      responses:
+        '201':
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCreatedResponse'
+              examples:
+                created:
+                  value:
+                    orderId: 101
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    get:
+      tags: [Orders]
+      summary: List my orders
+      description: Returns full purchase history for the authenticated user.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Orders list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderResponse'
+              examples:
+                history:
+                  value:
+                    - id: 101
+                      status: CREATED
+                      total: "400.00"
+                      createdAt: "2026-03-01T10:00:00Z"
+                      items:
+                        - productId: 1
+                          quantity: 2
+                          unitPrice: "200.00"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /orders/{id}:
+    delete:
+      tags: [Orders]
+      summary: Cancel order
+      description: Cancels an existing order if it belongs to the authenticated user.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '204':
+          description: Order canceled
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /stats/orders:
+    get:
+      tags: [Admin]
+      summary: Orders statistics
+      description: Returns aggregated order statistics. Available only for admin users.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Aggregated order statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrdersStatsResponse'
+              examples:
+                stats:
+                  value:
+                    totalOrders: 15
+                    canceledOrders: 3
+                    createdOrders: 12
+                    totalRevenue: "3499.90"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdPath:
+      in: path
+      name: id
+      description: Resource identifier
+      required: true
+      schema:
+        type: integer
+        format: int64
+
+  responses:
+    BadRequestError:
+      description: Validation or malformed request error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            badRequest:
+              value:
+                code: VALIDATION_ERROR
+                message: Invalid product id
+    UnauthorizedError:
+      description: Missing or invalid auth token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            unauthorized:
+              value:
+                code: AUTH_ERROR
+                message: Invalid token
+    ForbiddenError:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            forbidden:
+              value:
+                code: ACCESS_DENIED
+                message: Admin role required
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            notFound:
+              value:
+                code: NOT_FOUND
+                message: Product not found
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            internal:
+              value:
+                code: INTERNAL_ERROR
+                message: Internal server error
+
+  schemas:
+    ApiError:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+
+    CurrentUser:
+      type: object
+      required: [id, email, role]
+      properties:
+        id:
+          type: integer
+          format: int64
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [USER, ADMIN]
+
+    RegisterRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [accessToken, tokenType]
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+          example: Bearer
+
+    CreateProductRequest:
+      type: object
+      required: [name, description, price, stock]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: string
+          example: "199.99"
+        stock:
+          type: integer
+          minimum: 0
+
+    UpdateProductRequest:
+      type: object
+      required: [name, description, price, stock]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: string
+          example: "199.99"
+        stock:
+          type: integer
+          minimum: 0
+
+    ProductResponse:
+      type: object
+      required: [id, name, description, price, stock]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: string
+        stock:
+          type: integer
+
+    CreateOrderRequest:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/CreateOrderItemRequest'
+
+    CreateOrderItemRequest:
+      type: object
+      required: [productId, quantity]
+      properties:
+        productId:
+          type: integer
+          format: int64
+        quantity:
+          type: integer
+          minimum: 1
+
+    OrderCreatedResponse:
+      type: object
+      required: [orderId]
+      properties:
+        orderId:
+          type: integer
+          format: int64
+
+    OrderResponse:
+      type: object
+      required: [id, status, total, createdAt, items]
+      properties:
+        id:
+          type: integer
+          format: int64
+        status:
+          type: string
+          enum: [CREATED, CANCELED]
+        total:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItemResponse'
+
+    OrderItemResponse:
+      type: object
+      required: [productId, quantity, unitPrice]
+      properties:
+        productId:
+          type: integer
+          format: int64
+        quantity:
+          type: integer
+        unitPrice:
+          type: string
+
+    OrdersStatsResponse:
+      type: object
+      required: [totalOrders, canceledOrders, createdOrders, totalRevenue]
+      properties:
+        totalOrders:
+          type: integer
+          format: int64
+        canceledOrders:
+          type: integer
+          format: int64
+        createdOrders:
+          type: integer
+          format: int64
+        totalRevenue:
+          type: string

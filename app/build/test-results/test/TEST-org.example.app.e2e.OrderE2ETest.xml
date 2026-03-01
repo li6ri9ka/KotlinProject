@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.app.e2e.OrderE2ETest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-03-01T23:53:16" hostname="MacBook-Pro-Viktor.local" time="0.03">
+  <properties/>
+  <testcase name="user creates and cancels order through API()" classname="org.example.app.e2e.OrderE2ETest" time="0.03"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

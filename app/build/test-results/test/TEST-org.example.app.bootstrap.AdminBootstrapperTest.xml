@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.app.bootstrap.AdminBootstrapperTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-03-01T23:53:16" hostname="MacBook-Pro-Viktor.local" time="0.188">
+  <properties/>
+  <testcase name="ensureAdmin does not create duplicate user()" classname="org.example.app.bootstrap.AdminBootstrapperTest" time="0.02"/>
+  <testcase name="ensureAdmin does not overwrite existing non-admin account()" classname="org.example.app.bootstrap.AdminBootstrapperTest" time="0.005"/>
+  <testcase name="ensureAdmin creates admin when config is enabled and user missing()" classname="org.example.app.bootstrap.AdminBootstrapperTest" time="0.162"/>
+  <system-out><![CDATA[Admin bootstrap skipped: user existing@example.com exists with role USER
+Admin user bootstrapped: admin@example.com
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
