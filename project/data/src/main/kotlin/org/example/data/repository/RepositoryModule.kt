@@ -1,4 +1,11 @@
 package org.example.data.repository
 
-// Placeholder for repository implementations.
-object RepositoryModule
+import org.example.data.repository.impl.ExposedAuditLogRepository
+import org.example.data.repository.impl.ExposedOrderRepository
+import org.example.data.repository.impl.ExposedProductRepository
+
+object RepositoryModule {
+    fun productRepository() = ExposedProductRepository()
+    fun orderRepository() = ExposedOrderRepository()
+    fun auditLogRepository() = ExposedAuditLogRepository()
+}

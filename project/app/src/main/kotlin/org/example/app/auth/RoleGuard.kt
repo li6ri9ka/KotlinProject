@@ -4,8 +4,8 @@ import org.example.app.principal.CurrentUser
 import org.example.domain.error.AccessDeniedException
 import org.example.domain.model.Role
 
-fun CurrentUser.requireAdmin() {
-    if (role != Role.ADMIN) {
-        throw AccessDeniedException("Admin role required")
+fun CurrentUser.requireRole(expected: Role) {
+    if (role != expected) {
+        throw AccessDeniedException("Required role: ${expected.name}")
     }
 }

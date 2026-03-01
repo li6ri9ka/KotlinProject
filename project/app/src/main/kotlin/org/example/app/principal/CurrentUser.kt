@@ -4,6 +4,4 @@ import org.example.domain.model.Role
 
 data class CurrentUser(
     val id: Long,
-    val role: Role,
-    val email: String?
 )
